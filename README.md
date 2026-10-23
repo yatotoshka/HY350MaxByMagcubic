@@ -8,6 +8,53 @@
 
 ---
 
+## Быстрый путь: сделать проектор удобным
+
+Если не хочется читать аудит целиком:
+
+1. **Получить ADB.** Установить Aptoide → Hidden Settings (`com.yjlink.secretsettings`) → Developer options → Wireless debugging. Pairing и команды — в [ADB](ADB/README.md).
+2. **Поставить сторонний лаунчер.** Например, Projectivy, и назначить его домашним:
+
+   ```sh
+   adb shell cmd package set-home-activity com.spocky.projengmenu/.ui.home.MainActivity
+   ```
+
+   Вернуть MagcubicOS:
+
+   ```sh
+   adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
+   ```
+
+3. **Переключить магазин на Google Play.** На этой сборке `com.android.vending` — настоящий Play Store, подписанный Google, с установленным GMS. Отдельной настройки «магазин по умолчанию» в UI нет, а штатная кнопка магазина в MagcubicOS всё равно открывает `com.hy.storeos`.
+
+   - `setprop persist.sys.defappstore com.android.vending` выполняется без root, но в проверке кнопка `OPEN_APP_STORE` всё равно открыла `com.hy.storeos` — возможно, свойство читается только при загрузке.
+   - Надёжнее отключить dropper и запускать Play Store напрямую:
+
+     ```sh
+     adb shell pm disable-user --user 0 com.hy.storeos
+     adb shell monkey -p com.android.vending -c android.intent.category.LAUNCHER 1
+     ```
+
+     Если `disable-user` не сработал: `adb shell pm uninstall --user 0 com.hy.storeos`. После этого ссылки `market://` обрабатывает Play Store. Кнопка магазина в MagcubicOS может перестать работать.
+
+   Вернуть свойство, если меняли:
+
+   ```sh
+   adb shell setprop persist.sys.defappstore com.hy.storeos
+   ```
+
+4. **Отключить OTA**, чтобы он не вернул dropper:
+
+   ```sh
+   adb shell pm disable-user --user 0 com.hy.hyotaupdate
+   ```
+
+5. **Для полной очистки** нужна правка образа: [Root](Root/README.md). Factory reset проблему не решает.
+
+> `com.hy.storeos` — это malware, а не просто магазин. Его отключение — часть очистки, а не только смена магазина.
+
+---
+
 ## Что это за устройство
 
 HY350 Max — проектор на Allwinner H726 с 2 ГБ ОЗУ, 16 или 32 ГБ eMMC и Android 14. В заводской прошивке установлен **BADBOX 2.0** в варианте `com.hy.storeos`.

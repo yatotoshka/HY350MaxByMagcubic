@@ -101,3 +101,5 @@ com.mphotool.usbcastserver
 - `hotacksu` присутствует, но `hotacksu 0 id` из shell возвращает `setgid failed: Operation not permitted`.
 - `ro.product.model` и `ro.board.platform` врут про Rockchip; реальная платформа — Allwinner `sun50iw15p1`.
 - `/oem` смонтирован с `media_data` (`mmcblk0p26`), хотя публичный отчёт утверждает, что раздела `oem` нет.
+- `persist.sys.defappstore=com.hy.storeos`; `setprop persist.sys.defappstore com.android.vending` выполняется без root, но команда `OPEN_APP_STORE` всё равно открыла `com.hy.storeos/.SettingsActivity`.
+- `market://` не имеет назначенного обработчика по умолчанию: система показывает выбор между `com.android.vending` и `com.hy.storeos`.

@@ -25,9 +25,7 @@ ro.product.cpu.abilist64 = []
 - **F-Droid** — open-source приложения, без Google;
 - **Aurora Store** — клиент к Play Store без сервисов Google (учитывайте ToS Google);
 - **Aptoide** — альтернативный магазин;
-- ручная установка APK с проверенных сайтов.
-
-Избегайте «оптимизаторов», «чистильщиков» и сборок с неизвестных форумов: на устройстве уже есть system-UID dropper, добавлять ещё один не нужно.
+- ручная установка APK.
 
 ## Лаунчер
 
@@ -81,8 +79,6 @@ adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME
 | Браузер | Firefox / Chromium 32-bit | тяжёлый для 2 ГБ |
 | Диагностика | CPU-Z / системный информатор | показывают железо и температуру |
 | Пульт | Infrared/USB-мышь, Bluetooth-пульт | ИК-приёмник встроенный |
-
-Не ставьте тяжёлые игры и «умные» лаунчеры с анимациями: 2 ГБ ОЗУ и zram не бесконечны.
 
 ## Кастинг: AirPlay, DLNA, Miracast
 

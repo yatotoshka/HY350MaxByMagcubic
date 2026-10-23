@@ -17,7 +17,7 @@
 ```sh
 ./collect_info.sh
 # или
-ADB=/tmp/opencode/platform-tools/platform-tools/adb SERIAL=192.168.1.50:5555 ./collect_info.sh
+SERIAL=192.168.1.50:5555 ./collect_info.sh
 ```
 
 Печатает сборку, железо, AVB/SELinux, экран, память, пакеты, слушатели и соединения. **Проверьте вывод перед публикацией**: в `ss` будут локальный IP проектора и адреса других устройств.

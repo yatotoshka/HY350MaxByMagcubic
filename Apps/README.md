@@ -11,16 +11,16 @@ ro.product.cpu.abilist = armeabi-v7a,armeabi
 ro.product.cpu.abilist64 = []
 ```
 
-Любой APK, собранный только под `arm64-v8a`, не установится. Если видите `INSTALL_FAILED_NO_MATCHING_ABIS` — причина в этом. Ищите `armeabi-v7a`-сборки.
+Любой APK, собранный только под `arm64-v8a`, не установится. Ошибка `INSTALL_FAILED_NO_MATCHING_ABIS` означает именно это. Ищите `armeabi-v7a`-сборки.
 
 ## Магазин приложений
 
 На устройстве два «магазина»:
 
 1. **`com.hy.storeos`** — вендорский dropper. По умолчанию именно он прописан в `persist.sys.defappstore`. После очистки прошивки его не будет. Не используйте его.
-2. **`com.android.vending`** — на проверенной сборке это настоящий Play Store, подписанный Google, с установленным GMS. Если вы удалили Tubesky, Play Store пропадёт.
+2. **`com.android.vending`** — на проверенной сборке это настоящий Play Store, подписанный Google, с установленным GMS. После удаления Tubesky Play Store пропадает.
 
-Если Play Store остался, им можно пользоваться после входа в Google-аккаунт. Если GMS/Play не работают, альтернативы:
+Play Store работает после входа в Google-аккаунт. При неработающих GMS/Play есть альтернативы:
 
 - **F-Droid** — open-source приложения, без Google;
 - **Aurora Store** — клиент к Play Store без сервисов Google (учитывайте ToS Google);
@@ -36,7 +36,7 @@ ro.product.cpu.abilist64 = []
 - начальный угол (`InitAngleActivity`);
 - главные настройки (`MainSettingActivity`).
 
-**Не удаляйте его.** Если хотите другой домашний экран, оставьте MagcubicOS установленным и назначьте новый лаунчер домашним.
+**Не удаляйте его.** Для другого домашнего экрана оставьте MagcubicOS установленным и назначьте новый лаунчер домашним.
 
 ### Как переключиться на сторонний лаунчер
 
@@ -79,7 +79,7 @@ adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivit
 adb shell setprop persist.sys.homePackage com.htc.magcubicos
 ```
 
-Если система не показывает выбор лаунчера при нажатии Home:
+При отсутствии выбора лаунчера при нажатии Home:
 
 ```sh
 adb shell cmd package clear-package-preferred-activities com.htc.magcubicos
@@ -119,7 +119,7 @@ adb shell settings get global ft_activated_data
 adb shell logcat | grep -i 'ProcActive\|mphotool'
 ```
 
-Если в логе `getActivated() isActived=0` — активации нет.
+Запись `getActivated() isActived=0` в логе означает отсутствие активации.
 
 ## Home Assistant
 

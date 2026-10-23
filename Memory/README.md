@@ -30,14 +30,14 @@ com.toofifi.lineserver
 com.htc.hyk_pcba
 com.mphotool.usbcastserver
 
-# Можно отключить, если не нужна встроенная заставка
+# Можно отключить: встроенная заставка не нужна
 adb shell pm disable-user --user 0 com.htc.screensaver
 ```
 
 Не отключайте:
 
 - `com.htc.magcubicos` — лаунчер и настройки изображения;
-- `com.android.vending` — если это настоящий Play Store;
+- `com.android.vending` — настоящий Play Store на этой сборке;
 - `com.google.android.gms` — без него не будет Play и части push;
 - `com.android.networkstack` — останетесь без сети.
 

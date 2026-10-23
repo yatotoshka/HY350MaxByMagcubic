@@ -4,13 +4,13 @@
 
 > **За основу взято.** Структура, методика и формат этого руководства взяты за основу из репозитория [Vadim000009/HY300ProByMagcubic](https://github.com/Vadim000009/HY300ProByMagcubic) («Реверс проектора HY300Pro от MagCubic и его доработка»). Текст написан заново для HY350 Max; данные по BADBOX 2.0 и очистке прошивки опираются на [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal). Это не официальная документация Magcubic.
 
-Репозиторий описывает один проверенный экземпляр HY350 Max и публичные находки по этой же модели. Состав прошивок у вендора меняется от сборки к сборке, поэтому **проверяйте своё устройство**, а не доверяйте этому отчёту вслепую.
+Репозиторий описывает один проверенный экземпляр HY350 Max и публичные находки по этой же модели. Проверка выполнена 23.10.2026 на сборке **`Projector_20260821.111618`** (Android 14, плата `h726_p1`). Состав прошивок у вендора меняется от сборки к сборке, поэтому **проверяйте своё устройство**, а не доверяйте этому отчёту вслепую.
 
 ---
 
 ## Быстрый путь: сделать проектор удобным
 
-Если не хочется читать аудит целиком:
+Краткая инструкция без чтения аудита:
 
 1. **Получить ADB.** Установить Aptoide → Hidden Settings (`com.yjlink.secretsettings`) → Developer options → Wireless debugging. Pairing и команды — в [ADB](ADB/README.md).
 2. **Поставить сторонний лаунчер.** Например, Projectivy, и назначить его домашним:
@@ -22,7 +22,7 @@
 
    Второй `setprop` закрепляет Projectivy как вендорский `homePackage`, но на холодной загрузке прошивка всё равно может первой показать MagcubicOS. После запуска любого приложения и выхода на главный экран открывается уже Projectivy. Это особенность этой прошивки, на работу она не влияет.
 
-   Если сторонний лаунчер не понравится, вернуть MagcubicOS:
+   **Откат:** вернуть MagcubicOS:
 
    ```sh
    adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
@@ -39,9 +39,9 @@
      adb shell monkey -p com.android.vending -c android.intent.category.LAUNCHER 1
      ```
 
-     Если `disable-user` не сработал: `adb shell pm uninstall --user 0 com.hy.storeos`. После этого ссылки `market://` обрабатывает Play Store. Кнопка магазина в MagcubicOS может перестать работать.
+     При ошибке `disable-user`: `adb shell pm uninstall --user 0 com.hy.storeos`. После этого ссылки `market://` обрабатывает Play Store. Кнопка магазина в MagcubicOS может перестать работать.
 
-   Вернуть свойство, если меняли:
+   **Откат:** вернуть свойство `persist.sys.defappstore` при отказе от Play Store:
 
    ```sh
    adb shell setprop persist.sys.defappstore com.hy.storeos

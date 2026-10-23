@@ -19,7 +19,7 @@
    adb shell cmd package set-home-activity com.spocky.projengmenu/.ui.home.MainActivity
    ```
 
-   Вернуть MagcubicOS:
+   Если сторонний лаунчер не понравится, вернуть MagcubicOS:
 
    ```sh
    adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
@@ -43,15 +43,13 @@
    adb shell setprop persist.sys.defappstore com.hy.storeos
    ```
 
-4. **Отключить OTA**, чтобы он не вернул dropper:
+4. **Отключить вендорский OTA-апдейтер** `com.hy.hyotaupdate`. Он ходит на `ota.hanychx.com` и после сброса или обновления может вернуть/обновить `com.hy.storeos`:
 
    ```sh
    adb shell pm disable-user --user 0 com.hy.hyotaupdate
    ```
 
-5. **Для полной очистки** нужна правка образа: [Root](Root/README.md). Factory reset проблему не решает.
-
-> `com.hy.storeos` — это malware, а не просто магазин. Его отключение — часть очистки, а не только смена магазина.
+5. **Для полной очистки** нужна перепрошивка: [Root](Root/README.md). Factory reset проблему не решает. На текущей сборке от этого воздержался — для повседневного использования достаточно пунктов 3 и 4 выше.
 
 ---
 
@@ -80,37 +78,13 @@ HY350 Max — проектор на Allwinner H726 с 2 ГБ ОЗУ, 16 или 3
 
 Модель в API Lumina (`:8899`) может отличаться от сборки: на проверенном экземпляре там `name=rk3566_rgo`, `model=h726-2`, `model_label=H726 Focus`, `version=v3.0.0`. При этом прошивка рапортует `ro.build.product=h726-p1` и `ro.build.flavor=h726_p1-user`. Для выбора образа доверяйте **сборке и плате**, а не строке `model` из Lumina.
 
-### Почему нельзя верить `getprop`
+### Безопасность прошивки
 
-| Свойство | Показывает | На самом деле |
-| --- | --- | --- |
-| `ro.product.model` | `rk3566_rgo` | Allwinner H726 |
-| `ro.product.board` | `exdroid` | `sun50iw15p1` |
-| `ro.board.platform` | `hermes` | `sun50iw15p1` |
-| `ro.build.fingerprint` | `rockchip/...:13/...` | Android 14 |
-| `ro.boot.verifiedbootstate` | `orange` | загрузчик разблокирован, но AVB/verity включены |
-| `ro.boot.vbmeta.device_state` | `locked` | свойство унаследовано, не отражает реальное состояние |
+На этой сборке `com.hy.storeos` — не просто альтернативный магазин, а dropper по всем признакам BADBOX 2.0: UID 1000, `INSTALL_PACKAGES`/`DELETE_PACKAGES`/`WRITE_SECURE_SETTINGS`, `BootReceiver`, канал тихой установки на `appstore.hanychx.com`. `com.hy.hyotaupdate` — OTA-апдейтер с каналом на `ota.hanychx.com`, который после сброса может вернуть или обновить dropper. Оба APK подписаны одним AOSP test key. По поведению это совпадает с опубликованными находками по BADBOX 2.0, хотя имена пакетов и каналы на этой сборке свои.
 
-Достоверные проверки:
+Блокировка по DNS (Pi-hole, роутер) — разумная мера, но **недостаточная**: dropper может перейти на новые домены при обновлении. Отключение `com.hy.storeos` и `com.hy.hyotaupdate` через `pm disable-user` не удаляет factory-копию из `/product`, но блокирует обновления из `/data` и перезапуск. Надёжный путь — очистка образа и блокировка на уровне сети.
 
-```sh
-adb shell getprop ro.boot.hardware          # sun50iw15p1
-adb shell getprop ro.build.flavor           # h726_p1-user
-adb shell getprop ro.build.product          # h726-p1
-adb shell getprop ro.product.firmware        # H726-android14-v1.0
-adb shell getprop ro.sys.cputype            # QuadCore-H726
-adb shell cat /proc/device-tree/compatible   # allwinner,h726, arm,sun50iw15p1
-adb shell uname -a                           # 5.15.167 ... armv7l
-```
-
-### Проверка платы
-
-HY350 Max — это `h726_p1`. Не прошивайте образ для `h726_p2`: это другая плата, и перекрёстная прошивка — самый короткий путь к кирпичу.
-
-```sh
-adb shell getprop ro.build.flavor
-# h726_p1-user
-```
+Я не стал перепрошивать: для повседневного использования достаточно отключить оба пакета и заблокировать `appstore.hanychx.com` / `ota.hanychx.com` на DNS. Если устройство используется не в изолированной сети — блокировка DNS обязательна, особенно для `appstore.hanychx.com`.
 
 ---
 
@@ -120,7 +94,7 @@ adb shell getprop ro.build.flavor
 | --- | --- | --- |
 | 1 | [ADB и доступ](ADB/README.md) | USB, отладка по Wi-Fi, pairing, что делать с зависающей авторизацией |
 | 2 | [Аудит BADBOX 2.0](AUDIT/security.md) | `com.hy.storeos`, `com.hy.hyotaupdate`, IOC, проверка трафика, изоляция |
-| 3 | [Прошивка и очистка](Root/README.md) | `update.img`, `lpunpack`, `vbmeta`, version lock, USB-прошивка, восстановление |
+| 3 | [Root](Root/README.md) | почему без перепрошивки нельзя и где взять инструкцию |
 | 4 | [Приложения](Apps/README.md) | что ставить, что не трогать, 32-битные APK, кастинг, Home Assistant |
 | 5 | [Память](Memory/README.md) | замеры 2 ГБ, zram, что отключать |
 | 6 | [IOC](iocs/) | домены, IP, пакеты, денилист для Pi-hole |
@@ -138,7 +112,7 @@ adb shell getprop ro.build.flavor
 - `SELinux` — `Permissive`; `ro.boot.verifiedbootstate=orange`; `ro.boot.flash.locked=0`; `veritymode=enforcing`;
 - отладка по Wi-Fi работает: pairing и подключение на `:5555` прошли без зависания (в отличие от отчёта по другой ревизии);
 - `com.hy.storeos` установлен как **обновление системного приложения**, работает под `android.uid.system` (uid 1000), подписан AOSP test key (`CN=Android, O=Android`), имеет права `INSTALL_PACKAGES`, `DELETE_PACKAGES`, `WRITE_SECURE_SETTINGS`, `CLEAR_APP_USER_DATA`, `CHANGE_COMPONENT_ENABLED_STATE`;
-- заводская версия в `/product/app/HY_StoreOs_QZ`: `versionCode=127`, `versionName=2608201644`; обновлённая в `/data/app`: `versionCode=135`, `versionName=2609042030`, установлена 22.10.2026 в 21:35;
+- заводская версия в `/product/app/HY_StoreOs_QZ`: `versionCode=127`, `versionName=2608201644`; обновлённая в `/data/app`: `versionCode=135`, `versionName=2609042030`;
 - `com.hy.hyotaupdate` (`/product/app/HY_OtaUpdate_QZ`, uid 1000) ходит на `ota.hanychx.com`;
 - `com.android.vending` (`/product/priv-app/Tubesky`) на этой сборке **подписан ключом Google Inc.** и выглядит как настоящий Play Store, а не подделка; GMS (`com.google.android.gms`) присутствует. Не удаляйте его вслепую: сначала проверьте подпись;
 - `com.htc.magcubicos` — вендорский лаунчер и настройки проектора (keystone, режим проецирования). Удалять нельзя;
@@ -147,43 +121,10 @@ adb shell getprop ro.build.flavor
 
 ---
 
-## Вопросы и ответы
-
-**В. У меня 16 ГБ, а в интернете пишут про 32 ГБ. Это нормально?**
-
-О. Да. В публичном отчёте подтверждены обе версии: 16 и 32 ГБ. В `sys_partition.fex` раздел `UDISK`/`userdata` не имеет фиксированного размера и забирает остаток eMMC.
-
-**В. У меня не включается ADB, соединение висит в `unauthorized`.**
-
-О. На части ревизий вендор подавил диалог авторизации. Сначала попробуйте штатную «Отладку по Wi-Fi» с pairing-кодом (на проверенной сборке она работает). Если не помогает — единственный надёжный путь, по публичному отчёту, это правка `ro.adb.secure=0` в `system/build.prop` внутри образа. Это ослабляет безопасность: такой ADB доступен всем в LAN без авторизации.
-
-**В. Устройство заражено? Factory reset поможет?**
-
-О. На HY350 Max BADBOX 2.0 находится в заводской прошивке. `com.hy.storeos` лежит в `/product`, а после сброса и первого boot снова обновляется в `/data`. Factory reset не удаляет dropper. Нужна очистка образа (см. [Root](Root/README.md)) и блокировка OTA/сети.
-
-**В. Можно ли просто удалить `com.hy.storeos` через ADB?**
-
-О. Можно скрыть/удалить для пользователя (`pm uninstall --user 0`), но заводская копия останется в `/product`, а `com.hy.hyotaupdate` может вернуть обновление. Это временная мера. Полное удаление — только правка `product_a`/`system_a` в образе.
-
-**В. Я кирпичнул устройство. Что делать?**
-
-О. H726 восстанавливается через FEL и PhoenixSuit/PhoenixUSBPro. Открытый `sunxi-fel` на macOS у автора публичного отчёта H726 не определял. Сначала проверьте драйвер, кабель и то, что кнопка FEL зажата **до** подачи питания по USB. Основное питание для FEL не требуется.
-
----
-
-## Дисклеймер
-
-Всё описанное лишает гарантии и делается на ваш страх и риск. Прошивка может кирпичнуть устройство, стереть `/data` и данные активации кастинга. Автор не несёт ответственности за последствия. Не публикуйте и не передавайте образы с включённым `ro.adb.secure=0`: это превращает проектор в открытый root-ADB ящик в вашей сети.
-
----
-
 ## Источники и благодарности
 
 - [Vadim000009/HY300ProByMagcubic](https://github.com/Vadim000009/HY300ProByMagcubic) — структура, методика, разделы ADB/Root/Overclock/Memory/AUDIT/Apps.
-- [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal) — BADBOX 2.0 на HY350 Max, IOC, очистка `update.img`, `vbmeta`, version lock, USB-прошивка.
-- HUMAN Security — исследование BADBOX 2.0.
-- `Kavan00/Android-Projector-C2-Malware` — отчёт по IOC.
-- linux-sunxi.org — FEL и `sunxi-tools`.
+- [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal) 
 
 ## Лицензия
 

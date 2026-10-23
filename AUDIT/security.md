@@ -23,6 +23,8 @@ HY350 Max поставляется с **BADBOX 2.0** в заводской пр�
 | SHA-256 APK из `/data` | `3f0d4dfea5905b109a537d0368d8ba8da7b492c8c814f4bd78f16be3dd389876` |
 | SHA-256 APK из `/product` | `859558ab8a67021ab9499def7f0d8acbb3dd0103db173eaa680dd1b4ab16a0f5` |
 
+С `com.hy.hyotaupdate` его роднит не только UID: в `dumpsys package` у обоих одинаковый отпечаток подписи `signatures:[b4addb29]`. Это части одного вендорского OTA-контура.
+
 Права, которые делают его опасным:
 
 ```
@@ -245,7 +247,7 @@ adb shell pm uninstall-system-updates com.hy.storeos
 
 ### Вариант 2. Полное удаление из образа
 
-Только этот способ удаляет dropper навсегда. Нужны `update.img` вашей сборки, `lpunpack`/`lpmake`, `debugfs` и пересборка Allwinner-контейнера. Пошагово — в [Root/README.md](../Root/README.md).
+Только этот способ удаляет dropper навсегда. Нужны `update.img` вашей сборки, `lpunpack`/`lpmake`, `debugfs` и пересборка Allwinner-контейнера. Пошагово — во внешних инструкциях: [HY300Pro → Root](https://github.com/Vadim000009/HY300ProByMagcubic/tree/main/Root) (та же платформа H726) и [hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal).
 
 Кратко:
 
@@ -323,4 +325,4 @@ com.mphotool.usbcastserver
 
 ---
 
-Дальше: [Прошивка и очистка](../Root/README.md)
+Дальше: [Root](../Root/README.md)

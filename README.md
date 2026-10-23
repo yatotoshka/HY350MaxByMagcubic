@@ -17,18 +17,22 @@
 
    ```sh
    adb shell cmd package set-home-activity com.spocky.projengmenu/.ui.home.MainActivity
+   adb shell setprop persist.sys.homePackage com.spocky.projengmenu
    ```
+
+   Второй `setprop` закрепляет Projectivy как вендорский `homePackage`, но на холодной загрузке прошивка всё равно может первой показать MagcubicOS. После запуска любого приложения и выхода на главный экран открывается уже Projectivy. Это особенность этой прошивки, на работу она не влияет.
 
    Если сторонний лаунчер не понравится, вернуть MagcubicOS:
 
    ```sh
    adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
+   adb shell setprop persist.sys.homePackage com.htc.magcubicos
    ```
 
-3. **Переключить магазин на Google Play.** На этой сборке `com.android.vending` — настоящий Play Store, подписанный Google, с установленным GMS. Отдельной настройки «магазин по умолчанию» в UI нет, а штатная кнопка магазина в MagcubicOS всё равно открывает `com.hy.storeos`.
+3. **Переключить магазин на Google Play.** На этой сборке `com.android.vending` — настоящий Play Store, подписанный Google, с установленным GMS. Отдельной настройки «магазин по умолчанию» в UI нет, а штатная кнопка магазина в MagcubicOS завязана на `com.hy.storeos`.
 
-   - `setprop persist.sys.defappstore com.android.vending` выполняется без root, но в проверке кнопка `OPEN_APP_STORE` всё равно открыла `com.hy.storeos` — возможно, свойство читается только при загрузке.
-   - Надёжнее отключить dropper и запускать Play Store напрямую:
+   - `setprop persist.sys.defappstore com.android.vending` выполняется без root и переживает перезагрузку, но одной этой настройки мало: кнопка магазина в MagcubicOS всё равно запускает `com.hy.storeos` напрямую.
+   - Поэтому нужно отключить dropper и запускать Play Store напрямую:
 
      ```sh
      adb shell pm disable-user --user 0 com.hy.storeos

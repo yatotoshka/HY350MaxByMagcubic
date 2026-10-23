@@ -102,5 +102,7 @@ com.mphotool.usbcastserver
 - `ro.product.model` и `ro.board.platform` врут про Rockchip; реальная платформа — Allwinner `sun50iw15p1`.
 - `/oem` смонтирован с `media_data` (`mmcblk0p26`), хотя публичный отчёт утверждает, что раздела `oem` нет.
 - `persist.sys.defappstore=com.hy.storeos`; `setprop persist.sys.defappstore com.android.vending` выполняется без root, но команда `OPEN_APP_STORE` всё равно открыла `com.hy.storeos/.SettingsActivity`.
-- `market://` не имеет назначенного обработчика по умолчанию: система показывает выбор между `com.android.vending` и `com.hy.storeos`.
+- `market://` до отключения `com.hy.storeos` не имеет назначенного обработчика по умолчанию: система показывает выбор между `com.android.vending` и `com.hy.storeos`. После отключения storeos ссылки уходят в Play Store.
 - `ro.build.type=user`, `ro.debuggable=0`, `adb root` возвращает `adbd cannot run as root in production builds`; `ro.boot.verifiedbootstate=orange`, `ro.boot.flash.locked=0`. Root возможен только через патч `init_boot`/`system` и прошивку через FEL.
+- `persist.sys.homePackage=com.htc.magcubicos`: вендорный `system_server` запускает этот пакет при загрузке. После переключения на Projectivy на холодной загрузке первым всё равно может открыться стоковый лаунчер; после запуска любого приложения и выхода на Home открывается Projectivy. Это штатное поведение этой сборки.
+- `persist.sys.defappstore=com.android.vending` и `pm disable-user` для `com.hy.storeos`/`com.hy.hyotaupdate` переживают перезагрузку. После этого `market://` разрешается в `com.android.vending`, а не в `com.hy.storeos`.

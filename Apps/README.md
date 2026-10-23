@@ -53,10 +53,30 @@ adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c 
 adb shell cmd package set-home-activity com.spocky.projengmenu/.ui.home.MainActivity
 ```
 
-Вернуть MagcubicOS:
+На этой прошивке одного `set-home-activity` мало: после перезагрузки вендорный `system_server` запускает пакет из `persist.sys.homePackage`, а там по умолчанию `com.htc.magcubicos`. Поэтому стоковый лаунчер может снова оказаться домашним. Закрепить Projectivy:
+
+```sh
+adb shell setprop persist.sys.homePackage com.spocky.projengmenu
+```
+
+Проверка и откат:
+
+```sh
+adb shell getprop persist.sys.homePackage
+adb shell setprop persist.sys.homePackage com.htc.magcubicos
+```
+
+### Поведение после перезагрузки
+
+Даже с `persist.sys.homePackage=com.spocky.projengmenu` на холодной загрузке первым может открыться MagcubicOS: вендорский лаунчер стартует раньше, чем применяется HOME-роль. После запуска любого приложения и нажатия Home открывается Projectivy. Это особенность прошивки, а не ошибка настройки; на работу она не влияет.
+
+`persist.sys.initPackage` не трогайте: он связан с `InitAngleActivity` и настройкой начального угла.
+
+Вернуть MagcubicOS полностью:
 
 ```sh
 adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
+adb shell setprop persist.sys.homePackage com.htc.magcubicos
 ```
 
 Если система не показывает выбор лаунчера при нажатии Home:

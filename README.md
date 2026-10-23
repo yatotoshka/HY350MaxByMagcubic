@@ -1,2 +1,2 @@
-# HY300MaxByMagcubic-
+# HY350MaxByMagcubic-
 Реверс проектора HY300max от MagCubic и его доработка. 

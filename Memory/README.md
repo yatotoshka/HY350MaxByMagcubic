@@ -72,7 +72,7 @@ adb shell pm disable-user --user 0 com.htc.screensaver
 
 ## Ограничение памяти на процесс (по желанию)
 
-В HY300 Pro для этого есть модуль `memcap` через cgroup v1. На HY350 Max он не проверялся. Если хотите повторить, сначала проверьте, какие cgroup доступны:
+Готового модуля `memcap` для HY350 Max нет. Если хотите ограничивать память через cgroup, сначала проверьте, какие cgroup доступны:
 
 ```sh
 adb shell ls /sys/fs/cgroup

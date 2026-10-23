@@ -10,7 +10,7 @@
 
 ## Что это за устройство
 
-HY350 Max — это не «HY300 Pro с другой наклейкой». Общая у них только платформа Allwinner H726 и вендорский зоопарк пакетов. У HY350 Max другая плата (`h726_p1`), другая память, другой экран, другая сборка Android и, что важнее, **заводская установка BADBOX 2.0** в варианте `com.hy.storeos`.
+HY350 Max — проектор на Allwinner H726 с 2 ГБ ОЗУ, 16 или 32 ГБ eMMC и Android 14. В заводской прошивке установлен **BADBOX 2.0** в варианте `com.hy.storeos`.
 
 Устройство выдаёт себя за Rockchip RK3566: в `getprop` прописаны `rk3566_rgo`, `hermes`, `rockchip`. Это ложь, унаследованная от чужого AOSP-конфига. Реальный SoC — **Allwinner H726** (`sun50iw15p1`), что подтверждается `ro.boot.hardware`, `/proc/device-tree/compatible` и `ro.build.flavor=h726_p1-user`.
 
@@ -56,24 +56,13 @@ adb shell cat /proc/device-tree/compatible   # allwinner,h726, arm,sun50iw15p1
 adb shell uname -a                           # 5.15.167 ... armv7l
 ```
 
-### Чем HY350 Max отличается от HY300 Pro
+### Проверка платы
 
-| Параметр | HY300 Pro (H726) | HY350 Max (H726) |
-| --- | --- | --- |
-| Плата | `h726_p2` (по публичным данным) | **`h726_p1`** |
-| ПЗУ | 8 ГБ | 16 или 32 ГБ |
-| ОЗУ | 1 ГБ | 2 ГБ |
-| Экран | 1280×720 | 1920×1080 |
-| Android | 14 | 14 |
-| Вендорский магазин | `com.htc.storeos` | **`com.hy.storeos`** |
-| OTA | `com.htc.htcotaupdate` | **`com.hy.hyotaupdate`** |
-| Прошивка | `h726_p2` | **`h726_p1`** |
-
-**Никогда не прошивайте `h726_p2` в `h726_p1` и наоборот.** Это разные платы, и это самый короткий путь к кирпичу. Проверка перед прошивкой:
+HY350 Max — это `h726_p1`. Не прошивайте образ для `h726_p2`: это другая плата, и перекрёстная прошивка — самый короткий путь к кирпичу.
 
 ```sh
 adb shell getprop ro.build.flavor
-# h726_p1-user — это HY350 Max
+# h726_p1-user
 ```
 
 ---
@@ -113,10 +102,6 @@ adb shell getprop ro.build.flavor
 
 ## Вопросы и ответы
 
-**В. Это руководство подходит для HY300 Pro / HY300 Max / HY350 Pro?**
-
-О. Нет, не целиком. Общие принципы (ADB, аудит, H726, FEL) переносимы, но разделы про пакеты, прошивку и разметку — только для HY350 Max с `h726_p1`. Для HY300 Pro используйте [HY300ProByMagcubic](https://github.com/Vadim000009/HY300ProByMagcubic).
-
 **В. У меня 16 ГБ, а в интернете пишут про 32 ГБ. Это нормально?**
 
 О. Да. В публичном отчёте подтверждены обе версии: 16 и 32 ГБ. В `sys_partition.fex` раздел `UDISK`/`userdata` не имеет фиксированного размера и забирает остаток eMMC.
@@ -151,7 +136,6 @@ adb shell getprop ro.build.flavor
 - [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal) — BADBOX 2.0 на HY350 Max, IOC, очистка `update.img`, `vbmeta`, version lock, USB-прошивка.
 - HUMAN Security — исследование BADBOX 2.0.
 - `Kavan00/Android-Projector-C2-Malware` — отчёт по IOC.
-- `micha102/hy300pro-debloat`, `ssw112`, `probonopd` — публичные находки по H726/HY300.
 - linux-sunxi.org — FEL и `sunxi-tools`.
 
 ## Лицензия

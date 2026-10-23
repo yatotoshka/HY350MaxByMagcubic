@@ -13,23 +13,6 @@ ro.product.cpu.abilist64 = []
 
 Любой APK, собранный только под `arm64-v8a`, не установится. Если видите `INSTALL_FAILED_NO_MATCHING_ABIS` — причина в этом. Ищите `armeabi-v7a`-сборки.
 
-## Что уже стоит
-
-На проверенном экземпляре:
-
-```
-com.finalwire.aida64
-ru.kinopoisk.tv
-com.alphainventor.filemanager
-com.yjlink.secretsettings
-cm.aptoide.pt
-com.spocky.projengmenu
-```
-
-Плюс отключены `com.toofifi.lineserver`, `com.htc.hyk_pcba`, `com.mphotool.usbcastserver`.
-
-`com.spocky.projengmenu` — меню инженерных настроек проектора, полезно для диагностики. `com.yjlink.secretsettings` открывает скрытые разделы Android. `AIDA64` показывает железо. Всё это ставится вручную и не является частью прошивки.
-
 ## Магазин приложений
 
 На устройстве два «магазина»:
@@ -41,7 +24,7 @@ com.spocky.projengmenu
 
 - **F-Droid** — open-source приложения, без Google;
 - **Aurora Store** — клиент к Play Store без сервисов Google (учитывайте ToS Google);
-- **Aptoide** — уже установлен на этом экземпляре;
+- **Aptoide** — альтернативный магазин;
 - ручная установка APK с проверенных сайтов.
 
 Избегайте «оптимизаторов», «чистильщиков» и сборок с неизвестных форумов: на устройстве уже есть system-UID dropper, добавлять ещё один не нужно.
@@ -55,31 +38,48 @@ com.spocky.projengmenu
 - начальный угол (`InitAngleActivity`);
 - главные настройки (`MainSettingActivity`).
 
-**Не удаляйте его.** Если хотите другой домашний экран, оставьте MagcubicOS установленным и назначьте новый лаунчер домашним:
+**Не удаляйте его.** Если хотите другой домашний экран, оставьте MagcubicOS установленным и назначьте новый лаунчер домашним.
 
-```sh
-adb shell cmd package set-home-activity com.example.launcher/.MainActivity
-```
+### Как переключиться на сторонний лаунчер
 
-Проверка текущего HOME:
+Проверить текущий HOME и все зарегистрированные лаунчеры:
 
 ```sh
 adb shell cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME
+adb shell cmd package query-activities --brief -a android.intent.action.MAIN -c android.intent.category.HOME
 ```
 
-Популярный вариант — Projectivy Launcher (на проверенном устройстве уже лежит APK в `/sdcard/Download`). Он лёгкий и заточен под проекторы/ТВ. После установки не забудьте, что настройки изображения всё равно открываются через MagcubicOS.
+Пример для Projectivy Launcher (`com.spocky.projengmenu`):
+
+```sh
+adb shell cmd package set-home-activity com.spocky.projengmenu/.ui.home.MainActivity
+```
+
+Вернуть MagcubicOS:
+
+```sh
+adb shell cmd package set-home-activity com.htc.magcubicos/.activity.MainActivity
+```
+
+Если система не показывает выбор лаунчера при нажатии Home:
+
+```sh
+adb shell cmd package clear-package-preferred-activities com.htc.magcubicos
+adb shell am start -a android.intent.action.MAIN -c android.intent.category.HOME
+```
+
+После этого нажать Home и выбрать нужный лаунчер. Настройки изображения всё равно открываются через MagcubicOS.
 
 ## Что поставить
 
 | Задача | Приложение | Замечания |
 | --- | --- | --- |
 | Лаунчер | Projectivy Launcher | лёгкий, ТВ-интерфейс, 32-bit |
-| Файлы | Material Files / X-plore / уже установленный File Manager | нужен доступ к USB и сети |
+| Файлы | Material Files / X-plore | нужен доступ к USB и сети |
 | Видео | VLC / mpv / MX Player (32-bit) | проверяйте аппаратное декодирование |
 | YouTube | SmartTube (32-bit) | без рекламы, управление пультом |
-| Кино | Kinopoisk, Wink, Okko, IVI | зависят от DRM; Widevine L1 может быть недоступен |
 | Браузер | Firefox / Chromium 32-bit | тяжёлый для 2 ГБ |
-| Диагностика | AIDA64, CPU-Z | уже установлен AIDA64 |
+| Диагностика | CPU-Z / системный информатор | показывают железо и температуру |
 | Пульт | Infrared/USB-мышь, Bluetooth-пульт | ИК-приёмник встроенный |
 
 Не ставьте тяжёлые игры и «умные» лаунчеры с анимациями: 2 ГБ ОЗУ и zram не бесконечны.

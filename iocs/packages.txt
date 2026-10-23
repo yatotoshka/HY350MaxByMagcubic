@@ -1,0 +1,31 @@
+# BADBOX 2.0 / StoreOS — Magcubic HY350 Max (Allwinner H726)
+# Android-пакеты. Сверяйте с путями и подписями, а не только с именами.
+
+# --- Dropper и OTA на проверенной сборке Projector_20260821.111618 ---
+com.hy.storeos          # /product/app/HY_StoreOs_QZ; обновляется в /data/app; uid 1000; AOSP test key; INSTALL_PACKAGES
+com.hy.hyotaupdate      # /product/app/HY_OtaUpdate_QZ; uid 1000; ota.hanychx.com; reinstall после сброса
+
+# --- Те же роли на других ревизиях HY350 Max ---
+com.htc.storeos         # /app/StoreOs_QZ; dropper в публичном отчёте
+com.htc.htcotaupdate    # /app/HtcOtaUpdate_QZ; OTA в публичном отчёте
+
+# --- com.android.vending / Tubesky ---
+# НЕ удалять вслепую. На проверенной сборке APK подписан Google Inc. и это
+# настоящий Play Store. Удалять только если подпись НЕ Google.
+com.android.vending
+
+# --- Встречаются только строками в публичном отчёте; удалять, если есть APK ---
+com.htc.expandsdk
+com.htc.eventuploadservice
+com.hotack.writesn
+com.hotack.silentsdk
+com.htc.htclauncherhighenglishd08
+
+# --- НЕ malware, не удалять ---
+com.htc.magcubicos       # /product/app/HY_MagcubicOS; лаунчер, keystone, режимы проекции
+
+# --- Другие импланты ---
+# /system/xbin/hotacksu  # setuid-root su-бинарник; на проверенной сборке вызов из shell даёт setgid failed
+
+# --- Признак BADBOX 2.0 ---
+# Устройство может представляться как ADT-3.

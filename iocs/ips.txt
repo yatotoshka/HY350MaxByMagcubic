@@ -1,0 +1,14 @@
+# BADBOX 2.0 — Magcubic HY350 Max (Allwinner H726)
+# Hardcoded IP. Блокировать на шлюзе/файрволе: DNS-фильтр такие обращения
+# не перехватывает. IP могут меняться.
+
+# --- Подтверждено на проверенном экземпляре (hanychx.com) ---
+8.218.163.124     # appstore.hanychx.com
+47.86.211.252     # ota.hanychx.com / faq.hanychx.com
+47.96.145.84      # hanychx.com
+
+# --- Публичные IOC ---
+139.199.190.220   # Tencent Cloud, OTA fallback
+128.12.122.35     # C2, геоданные
+103.124.165.222   # hardcoded C2, обходит DNS
+64.32.27.247      # api.pixelpioneerss.com, может ротироваться

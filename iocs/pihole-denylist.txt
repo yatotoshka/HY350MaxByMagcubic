@@ -1,0 +1,31 @@
+# Pi-hole wildcard/regex denylist — BADBOX 2.0
+# Magcubic HY350 Max / Allwinner H726
+#
+# Добавляйте как wildcard-домены (Domains -> Add domain -> Wildcard),
+# а не как точные записи, если хотите покрыть поддомены.
+#
+# server.mphotool.com сюда НЕ включён намеренно: он нужен для активации
+# AirPlay/DLNA после прошивки. Разрешите его один раз, затем можете добавить.
+
+hanychx.com
+akisinn.info
+aodintech.com
+dewrain.life
+dxp.baidu.com
+hmma.baidu.com
+hotack.com
+ipdatacloud.com
+kkoip.com
+leiniao.com
+pixelpioneerss.com
+smartinnovate.net
+soax.com
+srafx.com
+thedynamicleap.com
+triplesai.com
+vaicore.site
+
+# --- Кандидаты, не проанализированы ---
+# ip4exordir.shop
+# zeromedia.cloud
+# zeasn.tv

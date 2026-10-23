@@ -1,0 +1,55 @@
+# BADBOX 2.0 / StoreOS — Magcubic HY350 Max (Allwinner H726)
+# Домены для DNS-блокировки. Один домен на строку, '#' — комментарий.
+#
+# Источники:
+#   - собственный аудит com.hy.storeos / com.hy.hyotaupdate (hanychx.com)
+#   - maximilian-sh/hy350max-badbox-removal/iocs/domains.txt
+#   - публичные отчёты HUMAN Security и Kavan00
+#
+# Внимание: домены могут меняться. Это не замена сетевой изоляции и firewall-правилам.
+
+# --- Подтверждено на проверенном экземпляре HY350 Max ---
+hanychx.com                  # родительский домен вендорского dropper/OTA
+appstore.hanychx.com         # тихая установка приложений
+ota.hanychx.com              # OTA, возврат malware после сброса
+faq.hanychx.com              # страница privacy policy из APK
+
+# --- Публичные IOC по BADBOX 2.0 / HY350 Max ---
+api.pixelpioneerss.com       # первичный C2 / stage 1
+sta.smartinnovate.net        # доставка payload
+bur.thedynamicleap.com       # вторичный C2 / stage 2
+kkoip.com                    # управление residential-proxy SOAX
+soax.com                     # прокси-сеть
+event-api.aodintech.com      # телеметрия
+pb-api.aodintech.com         # конфиг рекламных вставок
+store-api.aodintech.com      # тихая установка приложений
+cdn-store.aodintech.com      # CDN магазина
+ota.triplesai.com            # OTA, переустановка malware
+otaapi.triplesai.com         # OTA fallback
+ota-api.aodintech.com        # OTA fallback
+shortx.srafx.com             # C2 лаунчера HTClauncher
+hotack.com                   # домен Hotack SDK
+
+# --- Новые домены из публичного отчёта (наблюдались вживую) ---
+int.vaicore.site
+int.dewrain.life
+int.akisinn.info
+
+# --- Телеметрия/аналитика рядом с C2 (блокировать по желанию) ---
+statsigapi.net
+app-measurement.com
+hmma.baidu.com
+dxp.baidu.com
+
+# --- Кандидаты со второго устройства (наблюдались, не проанализированы) ---
+ip4exordir.shop
+zeromedia.cloud
+zeasn.tv
+ipdatacloud.com
+leiniao.com
+
+# --- Функциональные домены, НЕ malware ---
+# server.mphotool.com — активация AirPlay/DLNA. Разрешить один раз после
+# прошивки/сброса, затем можно блокировать. Если заблокировать до активации,
+# приёмники останутся выключенными.
+server.mphotool.com

@@ -2,7 +2,9 @@
 
 ← [К оглавлению](../README.md) · [Аудит](../AUDIT/security.md)
 
-Этот раздел описывает полную очистку заводского образа HY350 Max от BADBOX 2.0 и, при необходимости, включение root-ADB. Он **не проверен автором на устройстве из этого репозитория**: рецепт собран по публичному отчёту [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal) и по данным, снятым с проверенного экземпляра. Всё, что ниже, может отличаться на вашей сборке.
+Этот раздел описывает полную очистку заводского образа HY350 Max от BADBOX 2.0 и получение root. Root здесь возможен **только через пересборку `update.img` и прошивку через FEL**: штатного пути без перепрошивки нет. Рецепт **не проверен автором на устройстве из этого репозитория**: он собран по публичному отчёту [maximilian-sh/hy350max-badbox-removal](https://github.com/maximilian-sh/hy350max-badbox-removal) и по данным, снятым с проверенного экземпляра. Всё, что ниже, может отличаться на вашей сборке.
+
+> **Root без полной пересборки и перепрошивки получить невозможно.** На этой сборке `adb root` отвечает `adbd cannot run as root in production builds`, `su` в системе нет, а fastboot/recovery с ADB sideload отсутствуют. Если root нужен — только патч `init_boot`/`system` и заливка образа через FEL. Готовая инструкция для той же платформы H726: [Vadim000009/HY300ProByMagcubic → Root](https://github.com/Vadim000009/HY300ProByMagcubic/tree/main/Root).
 
 > **Прошивка стирает `/data` и может кирпичнуть устройство.** Сделайте дамп и сохраните исходный `update.img` в двух местах. Восстановление — FEL + PhoenixSuit/PhoenixUSBPro.
 
@@ -237,9 +239,21 @@ FEL — аварийный загрузчик в кристалле Allwinner. �
 
 Публичный отчёт предупреждает: `sunxi-fel` на macOS не определил H726. Если FEL не виден — проверьте драйвер, кабель и порядок «кнопка зажата до питания». Плата H726 может работать от одного USB; основное питание нужно светодиоду.
 
-## 7. Root-ADB (опционально, опасно)
+## 7. Root: только через перепрошивку
 
-Если на вашей ревизии ADB-авторизация висит и pairing не помогает, публичный отчёт предлагает вшить в `system_a.img:/system/build.prop`:
+**Root без пересборки и прошивки не ставится.** Проверено на этой сборке:
+
+- `ro.build.type=user`, `ro.build.tags=release-keys`, `ro.debuggable=0`; `adb root` возвращает `adbd cannot run as root in production builds`;
+- `su` нет в `/system/bin`, `/system/xbin`, `/sbin`, `/debug_ramdisk`; Magisk/SuperSU не установлены;
+- нет fastboot и recovery с ADB sideload — запись разделов возможна только через FEL и `update.img`;
+- `ro.boot.verifiedbootstate=orange` и `ro.boot.flash.locked=0` не дают shell прав на запись в `/system` или `boot`;
+- вендорский setuid-бинарник `hotacksu` на этой сборке не сработал (`setgid failed`), хотя на другой ревизии даёт root; полагаться на него нельзя.
+
+Рабочий путь — пропатчить `init_boot.fex` в Magisk, поправить `vbmeta` и прошить образ. Пошагово для H726: [Vadim000009/HY300ProByMagcubic → Root](https://github.com/Vadim000009/HY300ProByMagcubic/tree/main/Root). Инструкция написана для HY300 Pro: сверьте `h726_p1`/`h726_p2`, разметку и `init_boot` со своим образом.
+
+### Вариант: root-ADB через build.prop
+
+Если нужен именно root-ADB, а не Magisk, публичный отчёт предлагает вшить в `system_a.img:/system/build.prop`:
 
 ```properties
 ro.secure=0

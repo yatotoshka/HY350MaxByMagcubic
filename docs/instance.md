@@ -103,3 +103,4 @@ com.mphotool.usbcastserver
 - `/oem` смонтирован с `media_data` (`mmcblk0p26`), хотя публичный отчёт утверждает, что раздела `oem` нет.
 - `persist.sys.defappstore=com.hy.storeos`; `setprop persist.sys.defappstore com.android.vending` выполняется без root, но команда `OPEN_APP_STORE` всё равно открыла `com.hy.storeos/.SettingsActivity`.
 - `market://` не имеет назначенного обработчика по умолчанию: система показывает выбор между `com.android.vending` и `com.hy.storeos`.
+- `ro.build.type=user`, `ro.debuggable=0`, `adb root` возвращает `adbd cannot run as root in production builds`; `ro.boot.verifiedbootstate=orange`, `ro.boot.flash.locked=0`. Root возможен только через патч `init_boot`/`system` и прошивку через FEL.

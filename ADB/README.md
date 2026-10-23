@@ -4,24 +4,6 @@
 
 Это отправная точка. Без ADB нельзя проверить пакеты, подписи, порты и состояние загрузчика. Root для аудита не нужен.
 
-## Сначала убедитесь, что у вас H726
-
-`getprop` на HY350 Max врёт: `ro.product.model=rk3566_rgo`, `ro.board.platform=hermes`, фингерпринт от Rockchip. Не определяйте процессор по этим строкам.
-
-Проверки, которым можно верить:
-
-```sh
-adb shell getprop ro.boot.hardware          # sun50iw15p1
-adb shell getprop ro.build.flavor           # h726_p1-user
-adb shell getprop ro.build.product          # h726-p1
-adb shell getprop ro.product.firmware       # H726-android14-v1.0
-adb shell getprop ro.sys.cputype            # QuadCore-H726
-adb shell cat /proc/device-tree/compatible   # allwinner,h726, arm,sun50iw15p1
-adb shell uname -a                           # 5.15.167 ... armv7l
-```
-
-HY350 Max — это `h726_p1`. `h726_p2` — другая плата; прошивки между ними несовместимы.
-
 ## Включение отладки
 
 На проверенной сборке штатный путь через «О устройстве» недоступен: UI не даёт добраться до нужного пункта. ADB включается так:
